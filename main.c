@@ -172,5 +172,5 @@ int main() {
         processInstruction(instruction);
     }
 
-    return 1;
+    return 0;
 } 

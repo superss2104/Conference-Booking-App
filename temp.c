@@ -1,9 +1,8 @@
 #include <stdio.h>
-    int x = 5;
-    int func(int a){
-        int b[x];
-        return a;
-    }
+#include <string.h>
 int main(){
-
+    char n[20];
+    fgets(n, sizeof(n), stdin);
+    printf("%d", strlen(n));
+    return 0;
 }

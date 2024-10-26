@@ -43,6 +43,14 @@ void addRoom(char* buildingName, char* roomId) {
         printf("Error: Cannot add more rooms, maximum limit reached.\n");
         return;
     }
+    for(int i =0 ; i<roomCount;i++)
+    {
+        if(!strcmp(rooms[i].buildingName,buildingName)&&!strcmp(rooms[i].roomId,roomId))
+        {
+            printf("room alreadys exits \n");
+            return;
+        }
+    }
     strcpy(rooms[roomCount].buildingName, buildingName);
     strcpy(rooms[roomCount].roomId, roomId);
     roomCount++;

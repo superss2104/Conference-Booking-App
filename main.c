@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define max_rooms 100
 #define name_length 50
@@ -30,7 +30,7 @@ int timeSlotCount = 0;
 
 
 int key = 0;
-void addRoom(const char* buildingName, const char* roomId) {
+void addRoom(char* buildingName, char* roomId) {
     char input[20];
     while(key == 0){
     printf("Enter password for admin access: ");
@@ -48,13 +48,21 @@ void addRoom(const char* buildingName, const char* roomId) {
     roomCount++;
     printf("Room added: %s %s\n", buildingName, roomId);
 }
+return;
 }
 
-void removeRoom(const char* buildingName, const char* roomId) {
+void removeRoom(char* buildingName, char* roomId) {
+    char input[20];
+    while(key == 0){
+    printf("Enter password for admin access: ");
+    scanf("%s", input);
+    if(strcmp(input, password) == 0) key = 1;
+    else printf("\nIncorrect Password, Please Try Again.\n");
+    }
+    if (key == 1){
     for (int i = 0; i < roomCount; i++) {
         if (strcmp(rooms[i].buildingName, buildingName) == 0 &&
             strcmp(rooms[i].roomId, roomId) == 0) {
-            // Shift all rooms after the removed one to fill the gap
             for (int j = i; j < roomCount - 1; j++) {
                 rooms[j] = rooms[j + 1];
             }
@@ -64,18 +72,19 @@ void removeRoom(const char* buildingName, const char* roomId) {
         }
     }
     printf("Room not found: %s %s\n", buildingName, roomId);
+    return;
+    }
 }
 
-void reserveRoom(const char* buildingName, const char* roomId, int startTime, int endTime, char* name) {
+void reserveRoom(char* buildingName, char* roomId, int startTime, int endTime, char* name, int x) {
     if (timeSlotCount >= max_slots) {
         printf("Error: Cannot add more timeslots, maximum limit reached.\n");
         return;
     }
-    // Check if the room exists in the list of rooms
     int roomExists = 0;
     for (int i = 0; i < roomCount; i++) {
         if (strcmp(rooms[i].buildingName, buildingName) == 0 && strcmp(rooms[i].roomId, roomId) == 0) {
-            roomExists = 1; // Room found
+            roomExists = 1; 
             break;
         }
     }
@@ -84,7 +93,7 @@ void reserveRoom(const char* buildingName, const char* roomId, int startTime, in
         printf("Error: Room %s %s does not exist!\n", buildingName, roomId);
         return;
     }
-    // Check if the requested time slot overlaps with any existing reservation
+
     if (startTime >= 0 && endTime <= 24 && startTime < endTime) {
         for (int i = 0; i < timeSlotCount; i++) {
             if (strcmp(timeslots[i].buildingName, buildingName) == 0 && strcmp(timeslots[i].roomId, roomId) == 0) {
@@ -107,13 +116,14 @@ void reserveRoom(const char* buildingName, const char* roomId, int startTime, in
         timeslots[timeSlotCount].endTime = endTime;
         timeSlotCount++;
 
-        printf("Reserved %s %s from %d to %d for %s\n", buildingName, roomId, startTime, endTime, name);
+    if (x == 0) printf("Reserved %s %s from %d to %d for %s\n", buildingName, roomId, startTime, endTime, name);
     } else {
-        printf("Invalid Time, Booking is allowed only between 0 and 24 wihtin the same day.\n");
+        printf("Invalid Time, Booking is allowed only between 0 and 24 within the same day.\n");
     }
+    return;
 }
 
-void cancelRoom(const char* buildingName, const char* roomId, int startTime, int endTime, char* name) {
+int cancelRoom(char* buildingName, char* roomId, int startTime, int endTime, char* name, int x) {
     for (int i = 0; i < timeSlotCount; i++) {
         if (strcmp(timeslots[i].buildingName, buildingName) == 0 &&
             strcmp(timeslots[i].roomId, roomId) == 0 &&
@@ -124,11 +134,12 @@ void cancelRoom(const char* buildingName, const char* roomId, int startTime, int
                 timeslots[j] = timeslots[j + 1];
             }
             timeSlotCount--;
-            printf("Canceled %s %s from %d to %d for %s\n", buildingName, roomId, startTime, endTime, name);
-            return;
+            if (x == 0) printf("Canceled %s %s from %d to %d for %s\n", buildingName, roomId, startTime, endTime, name);
+            return 1;
         }
     }
     printf("Time slot not found: %s %s from %d to %d\n", buildingName, roomId, startTime, endTime);
+    return 0;
 }
 
 void displayRooms() {
@@ -136,6 +147,7 @@ void displayRooms() {
     for (int i = 0; i < roomCount; i++) {
         printf("%s %s\n", rooms[i].buildingName, rooms[i].roomId);
     }
+    return;
 }
 
 // Function to display all reserved time slots
@@ -145,6 +157,7 @@ void displayTimeSlots() {
         printf("%s %s from %d to %d for %s\n", timeslots[i].buildingName, timeslots[i].roomId,
                timeslots[i].startTime, timeslots[i].endTime, timeslots[i].name);
     }
+    return;
 }
 
 void load()
@@ -172,6 +185,7 @@ void load()
    printf("data file (datatimeslots.txt) not found");
 
   fclose(data);
+  return;
 }
 
 void save()
@@ -199,19 +213,76 @@ void save()
    printf("data file (timeslots.txt) not found");
 
   fclose(data);
+  return;
+}
+
+// void edit(char* buildingName, char* roomId, int startTime, int endTime, char* name) {
+//     if (cancelRoom(buildingName, roomId, startTime, endTime, name, 1)){
+//     printf("Enter new reservation details: ");
+//     char newBuildingName[name_length], newRoomId[name_length], newName[name_length];
+//     int newStartTime, newEndTime;
+//     if (scanf("%s %s %d %d %s", newBuildingName, newRoomId, &newStartTime, &newEndTime, newName) == 5) {
+//         reserveRoom(newBuildingName, newRoomId, newStartTime, newEndTime, newName, 0);
+//     } else {
+//         reserveRoom(buildingName, roomId, startTime, endTime, name, 1);
+//         printf("Invalid input. Editing reservation failed.\n");
+//     }
+//     }
+//     else printf("Room doesn't exist!\n");
+// }
+
+void edit(char* buildingName, char* roomId, int startTime, int endTime, char* name){
+    for (int i = 0; i < timeSlotCount; i++) {
+    if (strcmp(timeslots[i].buildingName, buildingName) == 0 &&
+                strcmp(timeslots[i].roomId, roomId) == 0 &&
+                timeslots[i].startTime == startTime &&
+                timeslots[i].endTime == endTime) {
+                    printf("Enter the new details: ");
+                    char input[100];
+                    char newBuildingName[name_length], newRoomId[name_length], newName[name_length];
+                    int newStartTime, newEndTime;
+                    getchar();
+                    scanf("%[^\n]", input);
+                if (sscanf(input, "%s %s %d %d %s", newBuildingName, newRoomId, &newStartTime, &newEndTime, newName) == 5){
+                    int roomExists = 0;
+                    for (int i = 0; i < roomCount; i++) {
+                        if (strcmp(rooms[i].buildingName, newBuildingName) == 0 && strcmp(rooms[i].roomId, newRoomId) == 0) {
+                            roomExists = 1; 
+                            break;
+                        }
+                    }
+                    
+                    if (!roomExists) {
+                        printf("Error: Room %s %s does not exist!\n", newBuildingName, newRoomId);
+                        return;
+                    }
+                    strcpy(timeslots[i].buildingName, newBuildingName);
+                    strcpy(timeslots[i].roomId, newRoomId);
+                    strcpy(timeslots[i].name, newName);
+                    timeslots[i].startTime = newStartTime;
+                    timeslots[i].endTime = newEndTime;
+                    printf("\nReservation updated.");
+                    return;
+                }
+                else {printf("Invalid format!\n");
+                return;}
+                }
+}
+    printf("This room doesn't exist!\n");
 }
 
 void help(){
     printf("List of Available Commands\n");
     printf("1. add - Adds a room to the list of available rooms.\nUsage: add [Building Name] [Room Number]\n\n");
-    printf("2. remove - Removes a room from the list of available rooms.\nUsage: remove [Building Name] [Room Number]\n\n");
+    printf("2. remove - Removes an existing room.\nUsage: remove [Building Name] [Room Number]\n\n");
     printf("3. reserve - Reserves a room from the list of available rooms.\nUsage: reserve [Building Name] [Room Number] [Start Time] [End Time] [Name]\n\n");
-    printf("4. cancel - Cancels a reserved room.\nUsage: cancel [Building Name] [Room Number] [Start Time] [End Time] [Name]\n\n");
+    printf("4. cancel - Cancels an existing reservation.\nUsage: cancel [Building Name] [Room Number] [Start Time] [End Time] [Name]\n\n");
     printf("5. rooms - Displays a list of available rooms for reservation.\nUsage: rooms\n\n");
     printf("6. timeslots - Displays a list of reserved rooms along with their timeslots and name.\nUsage: timeslots.\n\n");
     printf("7. load - Loads the previously saved booking data.\nUsage: load\n\n");
-    printf("8. save - Saves the current booking data.\nUsage: save\n\n");
-    printf("9. exit - Exits the application.\nUsage: exit\n\n");
+    printf("8. edit - Edits an existing reservation.\nUsage: edit [Building Name] [Room Number] [Start Time] [End Time] [Name].\nThen enter the new details in the same format.\n\n");
+    printf("9. save - Saves the current booking data.\nUsage: save\n\n");
+    printf("10. exit - Exits the program.\nUsage: exit\n\n");
 }
 
 void processInstruction(char* instruction) {
@@ -227,9 +298,11 @@ void processInstruction(char* instruction) {
     } else if (sscanf(instruction, "remove %s %s", buildingName, roomId) == 2) {
         removeRoom(buildingName, roomId);
     } else if (sscanf(instruction, "reserve %s %s %d %d %s", buildingName, roomId, &startTime, &endTime, name) == 5) {
-        reserveRoom(buildingName, roomId, startTime, endTime, name);
+        reserveRoom(buildingName, roomId, startTime, endTime, name, 0);
     } else if (sscanf(instruction, "cancel %s %s %d %d %s", buildingName, roomId, &startTime, &endTime, name) == 5) {
-        cancelRoom(buildingName, roomId, startTime, endTime, name);
+        cancelRoom(buildingName, roomId, startTime, endTime, name, 0);
+    } else if (sscanf(instruction, "edit %s %s %d %d %s", buildingName, roomId, &startTime, &endTime, name) == 5) {
+        edit(buildingName, roomId, startTime, endTime, name);
     } else if (strcmp(instruction, "rooms") == 0) {
         displayRooms();
     } else if (strcmp(instruction, "timeslots") == 0) {

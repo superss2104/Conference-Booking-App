@@ -274,12 +274,17 @@ void edit(char *buildingName, char *roomId, int startTime, int endTime, char *na
             int newStartTime, newEndTime;
             getchar();
             scanf("%[^\n]", input);
-            if (sscanf(input, "%s %s %d %d %s", newBuildingName, newRoomId, &newStartTime, &newEndTime, newName) == 5)
-            {
+
+            if (sscanf(input, "%s %s %d %d %s", newBuildingName, newRoomId, &newStartTime, &newEndTime, newName) == 5){
+                if (newEndTime <= newStartTime){
+                    printf("Invalid time: End time must be greater than start time.\n");
+                    return;
+                }
+
                 int roomExists = 0;
-                for (int i = 0; i < roomCount; i++)
+                for (int j = 0; j < roomCount; j++)
                 {
-                    if (strcmp(rooms[i].buildingName, newBuildingName) == 0 && strcmp(rooms[i].roomId, newRoomId) == 0)
+                    if (strcmp(rooms[j].buildingName, newBuildingName) == 0 && strcmp(rooms[j].roomId, newRoomId) == 0)
                     {
                         roomExists = 1;
                         break;
@@ -294,29 +299,8 @@ void edit(char *buildingName, char *roomId, int startTime, int endTime, char *na
 
                 if (newEndTime - newStartTime > 6)
                 {
-                    printf("Reservation is allowed only upto 6 hours!\n");
+                    printf("Reservation is allowed only up to 6 hours!\n");
                     return;
-                }
-
-                if (startTime >= 0 && endTime <= 24 && startTime < endTime)
-                {
-                    for (int i = 0; i < timeSlotCount; i++)
-                    {
-                        if (strcmp(timeslots[i].buildingName, buildingName) == 0 && strcmp(timeslots[i].roomId, roomId) == 0)
-                        {
-                            int existingStartTime = timeslots[i].startTime;
-                            int existingEndTime = timeslots[i].endTime;
-                            if ((endTime <= existingStartTime && startTime >= existingEndTime))
-                            {
-                                printf("Error: Time slot %d to %d for room %s %s is already reserved!\n", existingStartTime, existingEndTime, buildingName, roomId);
-                                return;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    printf("Invalid Time, Booking is allowed only between 0 and 24 within the same day.\n");
                 }
 
                 strcpy(timeslots[i].buildingName, newBuildingName);
@@ -336,6 +320,7 @@ void edit(char *buildingName, char *roomId, int startTime, int endTime, char *na
     }
     printf("This reservation doesn't exist!\n");
 }
+
 
 void logout()
 {
@@ -362,7 +347,7 @@ void help()
     printf("9. save - Saves the current booking data.\nUsage: save\n\n");
     printf("10. logout - logs out from admin user. \nUsage: logout\n\n");
     printf("11. exit - Exits the program.\nUsage: exit\n\n");
-}
+}   
 
 void processInstruction(char *instruction)
 {

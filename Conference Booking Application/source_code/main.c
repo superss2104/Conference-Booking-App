@@ -354,7 +354,7 @@ void help()
     printf("5. rooms - Displays a list of available rooms for reservation.\nUsage: rooms\n\n");
     printf("6. timeslots - Displays a list of reserved rooms along with their timeslots and name.\nUsage: timeslots.\n\n");
     printf("7. load - Loads the previously saved booking data.\nUsage: load\n\n");
-    printf("8. edit - Edits an existing reservation.\nUsage: edit [Building Name] [Room Number] [Start Time] [End Time] [Name].\nThen enter the new details in the same format.\n\n");
+    printf("8. edit - Edits an existing reservation.l\nUsage: edit [Building Name] [Room Number] [Start Time] [End Time] [Name].\nThen enter the new details in the same format.\n\n");
     printf("9. save - Saves the current booking data.\nUsage: save\n\n");
     printf("10. logout - logs out from admin user. \nUsage: logout\n\n");
     printf("11. exit - Exits the program.\nUsage: exit\n\n");

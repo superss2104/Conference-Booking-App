@@ -1,9 +1,0 @@
-Contributions by each group member:
-1. Process Instruction and edit command - Suhail(CS24B043) & Sravan(EE24B013)
-2. File handling (load and save) - Sravan(EE24B013)
-3. Add and Remove rooms - Himesh (ME24B013)
-4. Debugging and testing for errors - Suhail(CS24B043) & Sravan(EE24B013)
-5. Reservation and cancellation - Yashwin(CS24B014)
-6. Timeslots and Rooms - Rahul(CH24B015)
-7. Admin feature implementation - Sasikanth(EE24B013)
-8. PPT, Execution instructions - Suhail(CS24B043)
